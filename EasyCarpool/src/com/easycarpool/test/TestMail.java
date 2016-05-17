@@ -12,7 +12,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class TestMail {
-
+	private static String userName = "easycarpooltech@gmail.com";
+	private static String password = "easycarpool@123";
 	public static void main(String[] args) {
 		Properties props = new Properties();
 		props.setProperty("proxySet","true");
@@ -31,7 +32,7 @@ public class TestMail {
 		Session session = Session.getDefaultInstance(props,
 				new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("ranjitjitu@gmail.com","jitu@1988");
+				return new PasswordAuthentication(userName,password);
 			}
 		});
 
