@@ -65,7 +65,7 @@ public class EasyCarpoolService {
 		if(tokenList.containsKey(username)){
 			if(tokenId.equals(tokenList.get(username))){
 				msg.put("Status", "Success");
-				msg.put("Message", "User Verification Successful.");
+				msg.put("Message", "User Verification Successful!!!");
 				return msg.toString();
 			}
 		}
@@ -74,7 +74,7 @@ public class EasyCarpoolService {
 		}catch(Exception je){
 			try {
 				msg.put("Status", "Error");
-				msg.put("Message", "User Verification Failed.");
+				msg.put("Message", "User Verification Failed!!!");
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
