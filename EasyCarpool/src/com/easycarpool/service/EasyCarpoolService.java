@@ -22,6 +22,7 @@ import com.easycarpool.mail.MailServerImpl;
 public class EasyCarpoolService {
 	
 	private static IMailServer mailServer = new MailServerImpl();
+	private static HashMap<String, String> otpList = new HashMap<>();
 	private static HashMap<String, String> tokenList = new HashMap<>();
 	private static int minRangeOTP = 000000;
 	private static int maxRangeOTP = 999999;
@@ -32,7 +33,7 @@ public class EasyCarpoolService {
 		JSONObject msg = new JSONObject();
 		try{
 		String username = request.getParameter("username");
-		if(tokenList.containsKey(username)){
+		if(otpList.containsKey(username)){
 			msg.put("Status", "Error");
 			msg.put("Message", "Duplicate username. Please try another username");
 			return msg.toString();
@@ -42,7 +43,7 @@ public class EasyCarpoolService {
 		String age = request.getParameter("age");
 		String newOTP = String.valueOf(getRandomNumberInRange(minRangeOTP,maxRangeOTP));
 		String response = mailServer.sendEmail(email, "EasyCarpool Verification", newOTP);
-		tokenList.put(username, newOTP);
+		otpList.put(username, newOTP);
 		return response;
 		}catch(JSONException je){
 			try {
@@ -62,10 +63,13 @@ public class EasyCarpoolService {
 		try{
 		String username = request.getParameter("username");
 		String tokenId = request.getParameter("tokenId");
-		if(tokenList.containsKey(username)){
-			if(tokenId.equals(tokenList.get(username))){
+		if(otpList.containsKey(username)){
+			if(tokenId.equals(otpList.get(username))){
+				UUID uuid = UUID.randomUUID();
 				msg.put("Status", "Success");
 				msg.put("Message", "User Verification Successful!!!");
+				msg.put("tokenId", uuid.toString());
+				tokenList.put(username, uuid.toString());
 				return msg.toString();
 			}
 		}
