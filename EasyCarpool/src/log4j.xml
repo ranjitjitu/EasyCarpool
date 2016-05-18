@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+
+    <!-- Default Log -->
+    <appender name="ErrorLogFile" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${catalina.home}/ec_log/EasyCarpool.log"/>
+        <param name="Threshold" value="debug"></param>
+        <param name="DatePattern" value=".yyyy-MM-dd"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %C{1}:%M %x - %m%n"/>
+        </layout>
+    </appender>
+    
+    <!-- SmartChat Adapter Log -->
+    <appender name="EasyCarpoolLogFile" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${catalina.home}/ec_log/EasyCarpool.log"/>
+        <param name="Threshold" value="debug"/>
+        <param name="DatePattern" value=".yyyy-MM-dd"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH:mm:ss.SSS} %c:%m%n"/>
+        </layout>
+    </appender>
+
+
+    <!--
+        *** Loggers ***
+    -->
+    <!-- SmartChat Adapter Logger -->
+    <logger name="com.easycarpool" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="EasyCarpoolLogFile"/>
+    </logger>
+
+    <!-- Root Logger.  Must be last. -->
+    <root>
+        <priority value="error"/>
+        <appender-ref ref="ErrorLogFile"/>
+    </root>
+
+</log4j:configuration>

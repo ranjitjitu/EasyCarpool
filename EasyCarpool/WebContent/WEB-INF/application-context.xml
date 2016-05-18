@@ -10,9 +10,9 @@
                         http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx.xsd">
                            
 	<context:component-scan base-package="com.easycarpool" />	
-	<!--  <context:property-placeholder location="classpath:SelfCareAdmin.properties,classpath:SelfCareAdminError.properties" />
+	<context:property-placeholder location="classpath:EasyCarpoolConfig.properties" />
 	
-	<bean id="ISCdataSource" class="org.apache.commons.dbcp.BasicDataSource">
+	<!--  <bean id="ISCdataSource" class="org.apache.commons.dbcp.BasicDataSource">
 			<property name="driverClassName" value="${driverClass}"/>
           	<property name="url" value="${jdbcUrl}"/>
           	<property name="username" value="${user}"/> 
