@@ -22,7 +22,9 @@ import com.easycarpool.mail.MailServerImpl;
 public class EasyCarpoolService {
 	
 	private static IMailServer mailServer = new MailServerImpl();
-	private static HashMap<String, UUID> tokenList = new HashMap<>();
+	private static HashMap<String, String> tokenList = new HashMap<>();
+	private static int minRangeOTP = 000000;
+	private static int maxRangeOTP = 999999;
 	
 	@RequestMapping(value= "registration", method = {RequestMethod.POST, RequestMethod.GET})
 	@ResponseBody
@@ -38,9 +40,9 @@ public class EasyCarpoolService {
 		String email = request.getParameter("email");
 		String gender = request.getParameter("gender");
 		String age = request.getParameter("age");
-		UUID newuuid = UUID.randomUUID();
-		String response = mailServer.sendEmail(email, "EasyCarpool Verification", newuuid.toString());
-		tokenList.put(username, newuuid);
+		String newOTP = String.valueOf(getRandomNumberInRange(minRangeOTP,maxRangeOTP));
+		String response = mailServer.sendEmail(email, "EasyCarpool Verification", newOTP);
+		tokenList.put(username, newOTP);
 		return response;
 		}catch(JSONException je){
 			try {
@@ -61,7 +63,7 @@ public class EasyCarpoolService {
 		String username = request.getParameter("username");
 		String tokenId = request.getParameter("tokenId");
 		if(tokenList.containsKey(username)){
-			if(tokenId.equals(tokenList.get(username).toString())){
+			if(tokenId.equals(tokenList.get(username))){
 				msg.put("Status", "Success");
 				msg.put("Message", "User Verification Successful.");
 				return msg.toString();
@@ -79,6 +81,9 @@ public class EasyCarpoolService {
 			
 		}
 		return msg.toString();
+	}
+	private static int getRandomNumberInRange(int min, int max) {
+		return (int)(Math.random() * ((max - min) + 1)) + min;
 	}
 
 }
