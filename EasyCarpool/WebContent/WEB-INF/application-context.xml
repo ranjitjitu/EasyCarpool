@@ -10,14 +10,13 @@
                         http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx.xsd">
                            
 	<context:component-scan base-package="com.easycarpool" />	
-	<context:property-placeholder location="classpath:SelfCareAdmin.properties,classpath:SelfCareAdminError.properties" /> 
+	<!--  <context:property-placeholder location="classpath:SelfCareAdmin.properties,classpath:SelfCareAdminError.properties" />
 	
 	<bean id="ISCdataSource" class="org.apache.commons.dbcp.BasicDataSource">
 			<property name="driverClassName" value="${driverClass}"/>
           	<property name="url" value="${jdbcUrl}"/>
           	<property name="username" value="${user}"/> 
           	<property name="password" value="${password}"/> 
-       <!-- <property name="defaultAutoCommit" value="false" /> -->
 		</bean>
 	
 	<bean id="scenarioMappingDao" class="com.infosys.assistedge.selfcare.scenario.dao.impl.ScenarioMappingDaoImpl">
@@ -27,7 +26,7 @@
 	<bean id="artifactManagerImpl" class="com.infosys.assistedge.manager.impl.ArtifactsImpl" scope="prototype">	
 			<property name="scenarioDao" ref="scenarioDao" />	
 			<property name="scenarioCategoryDao" ref="scenarioCategoryDao" />				
-	</bean>
+	</bean>-->
 		
 </beans> 
 

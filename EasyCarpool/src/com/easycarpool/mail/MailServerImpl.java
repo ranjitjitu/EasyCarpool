@@ -24,9 +24,9 @@ public class MailServerImpl implements IMailServer{
 
 	static{
 		props = new Properties();
-		props.setProperty("proxySet","true");
-		props.setProperty("socksProxyHost","192.168.155.1");
-		props.setProperty("socksProxyPort","1080");
+//		props.setProperty("proxySet","true");
+//		props.setProperty("socksProxyHost","192.168.155.1");
+//		props.setProperty("socksProxyPort","1080");
 		props.setProperty("mail.smtp.host", "smtp.gmail.com");
 		props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		props.setProperty("mail.smtp.socketFactory.fallback", "false");
@@ -56,8 +56,8 @@ public class MailServerImpl implements IMailServer{
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(toAddress));
 			message.setSubject(subject);
-			message.setText("Dear Mail Crawler," +
-					"\n\n No spam to my email, please!"+
+			message.setText("Dear User," +
+					"\n\n Your Verification OTP is below"+
 					"\n\n"+content);
 			message.setSentDate(new Date());
 			Transport.send(message);

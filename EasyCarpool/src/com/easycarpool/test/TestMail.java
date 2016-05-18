@@ -16,9 +16,9 @@ public class TestMail {
 	private static String password = "easycarpool@123";
 	public static void main(String[] args) {
 		Properties props = new Properties();
-		props.setProperty("proxySet","true");
-        props.setProperty("socksProxyHost","192.168.155.1");
-        props.setProperty("socksProxyPort","1080");
+//		props.setProperty("proxySet","true");
+//        props.setProperty("socksProxyHost","192.168.155.1");
+//        props.setProperty("socksProxyPort","1080");
         props.setProperty("mail.smtp.host", "smtp.gmail.com");
         props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.setProperty("mail.smtp.socketFactory.fallback", "false");
@@ -39,12 +39,12 @@ public class TestMail {
 		try {
 
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("ranjitjitu@gmail.com"));
+			message.setFrom(new InternetAddress(userName));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse("ranjit_behura@infosys.com"));
-			message.setSubject("Testing Subject");
-			message.setText("Dear Mail Crawler," +
-					"\n\n No spam to my email, please!");
+			message.setSubject("Message from Carpool App");
+			message.setText("Hey," +
+					"\n\n Finally got it working. Yayyyyy!");
 			message.setSentDate(new Date());
 
 			Transport.send(message);
