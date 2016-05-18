@@ -66,7 +66,7 @@ public class MailServerImpl implements IMailServer{
 			System.out.println("Done");
 		}catch (MessagingException e) {
 			msg.put("Status", "Error");
-			msg.put("Message", "Mail Not Sent.Try Again");
+			msg.put("Message", "Mail Not Sent.Try Again.");
 			throw new RuntimeException(e);
 		}catch (JSONException e) {
 			msg.put("Status", "Error");
