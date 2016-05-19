@@ -67,7 +67,7 @@ public class EasyCarpoolService {
 			if(tokenId.equals(otpList.get(username))){
 				UUID uuid = UUID.randomUUID();
 				msg.put("Status", "Success");
-				msg.put("Message", "User Verification Successful.");
+				msg.put("Message", "User Verification Successful. Enjoy!!!");
 				msg.put("tokenId", uuid.toString());
 				tokenList.put(username, uuid.toString());
 				return msg.toString();
@@ -78,7 +78,7 @@ public class EasyCarpoolService {
 		}catch(Exception je){
 			try {
 				msg.put("Status", "Error");
-				msg.put("Message", "User Verification Failed.");
+				msg.put("Message", "User Verification Failed. Sorry!!!");
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
