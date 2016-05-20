@@ -71,13 +71,40 @@ public class RedisImpl implements RedisHelper{
 			Map<byte[], byte[]> resultMap = jedis.hgetAll(mapName.getBytes("UTF-8"));
 			
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "put method", "Exception in put method. Message : "+e);
+			logger.log(Level.ERROR, CLASS_NAME, "getAll method", "Exception in getAll method. Message : "+e);
 		}finally{
 			if(jedis.isConnected()){
 				jedis.close();
 			}
 		}
 		return null;
+	}
+	public void remove(String mapName,String key){
+		Jedis jedis = pool.getResource();
+		try {
+			jedis.hdel(mapName.getBytes("UTF-8"),key.getBytes("UTF-8"));
+			
+		} catch (Exception e) {
+			logger.log(Level.ERROR, CLASS_NAME, "remove method", "Exception in remove method. Message : "+e);
+		}finally{
+			if(jedis.isConnected()){
+				jedis.close();
+			}
+		}
+	}
+	public boolean containKey(String mapName,String key){
+		Jedis jedis = pool.getResource();
+		try {
+			return jedis.hexists(mapName.getBytes("UTF-8"),key.getBytes("UTF-8"));
+			
+		} catch (Exception e) {
+			logger.log(Level.ERROR, CLASS_NAME, "remove method", "Exception in remove method. Message : "+e);
+		}finally{
+			if(jedis.isConnected()){
+				jedis.close();
+			}
+		}
+		return false;
 	}
 	private Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException{
 		Object obj = null;

@@ -1,12 +1,11 @@
 package com.easycarpool.dao;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
-import com.easycarpool.entity.UserDetails;
 
 public interface UserDetailsDao {
 
 
-	public String insert(UserDetails user);
-	public Object get(String userName);
+	public String insert(HttpServletRequest request);
+	public String get(HttpServletRequest request);
 }

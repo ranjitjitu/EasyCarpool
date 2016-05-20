@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.apache.commons.io.FileUtils;
@@ -27,6 +28,8 @@ import com.easycarpool.log.EasyCarpoolLogger;
 import com.easycarpool.log.IEasyCarpoolLogger;
 import com.easycarpool.redis.RedisHelper;
 import com.easycarpool.redis.RedisImpl;
+import com.easycarpool.redis.RedisWrapper;
+import com.google.gson.Gson;
 
 /**
  * @author ranjit_behura
@@ -39,7 +42,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 	private static IEasyCarpoolLogger logger = EasyCarpoolLogger.getLogger();
 	private static String CLASS_NAME = UserDetailsDaoImpl.class.getName();
 	private static final String mapName = "ec_userDetails";
-	private static RedisHelper redis = new RedisImpl();
+	private static RedisWrapper redisWrapper = new RedisWrapper();
 
 	/**
 	 * @param dataSource
@@ -55,9 +58,15 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 	//		this.jdbcTemplate=jdbcTemplate;
 	//	}
 	@Override
-	public String insert(UserDetails user) {
+	public String insert(HttpServletRequest request) {
 		try {
-			redis.put(user.getUsername(), mapName, user);
+			UserDetails user = new UserDetails();
+			user.setUsername(request.getParameter("username"));
+			user.setCompany(request.getParameter("company"));
+			user.setEmail(request.getParameter("email"));
+			user.setGender(request.getParameter("gender"));
+			user.setAge(Integer.parseInt(request.getParameter("age")));
+			redisWrapper.insert(user.getUsername(), mapName, user);
 
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "insert", "Exception thrown while inserting value for userDetails : "+e.getMessage());
@@ -68,16 +77,16 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 	}
 
 	@Override
-	public Object get(String userName) {
+	public String get(HttpServletRequest request) {
 		UserDetails user = null;
 		try {
-			user = (UserDetails)redis.get(mapName, userName);
+			String username = request.getParameter("username");
+			user = (UserDetails)redisWrapper.get(username, mapName);
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "get", "Exception thrown while get value for userDetails : "+e.getMessage());
-			return null;
 		} finally {
 		}
-		return user;
+		return new Gson().toJson(user);
 	}
 	
 }
