@@ -24,6 +24,7 @@ public class CarDetailsDaoImpl implements CarDetailsDao {
 		CarDetails car = null;
 		try {
 			car = new CarDetails();
+			car.getCarColor();
 			car.setUsername(request.getParameter("username"));
 			car.setCarMake(request.getParameter("carmake"));
 			car.setCarVariant(request.getParameter("carvariant"));
