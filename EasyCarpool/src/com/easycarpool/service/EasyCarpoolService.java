@@ -55,7 +55,7 @@ public class EasyCarpoolService {
 		}catch(JSONException je){
 			try {
 				msg.put("Status", "Error");
-				msg.put("Message", "Mail Not Sent.Try Again");
+				msg.put("Message", "Mail Not Sent.Try Again,");
 			} catch (JSONException e) {
 				logger.log(Level.ERROR, CLASS_NAME, "registrationService", "Exception thrown in registrationService : "+e.getMessage());
 			}
