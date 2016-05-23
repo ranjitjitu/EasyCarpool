@@ -1,55 +1,16 @@
 package com.easycarpool.dao;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
-import com.easycarpool.entity.UserDetails;
 
 public interface UserDetailsDao {
 
-	/**
-	 * @param scenario
-	 * @return
-	 */
-	public String insert(UserDetails scenario);
 
-	/**
-	 * @param scenario
-	 * @return
-	 */
-	public int update(UserDetails scenario);
-
-	/**
-	 * @param scenarioId
-	 * @return
-	 */
-	public String delete(int scenarioId);
-
-	/**
-	 * @param scenarioId
-	 * @return
-	 */
-	public UserDetails findScenarioByScenarioId(int scenarioId);
-	/**
-	 * @param scenarioName
-	 * @return
-	 */
-	public UserDetails findScenarioByScenarioName(String scenarioName,float version);
-
-	/**
-	 * @param artifactId
-	 * @return
-	 */
-	public UserDetails findScenarioByArtifactId(String artifactId, String version);
-
-	/**
-	 * @return
-	 */
-	public List<UserDetails> getAllScenarios();
+	public String insert(HttpServletRequest request);
+	public String get(HttpServletRequest request);
+	public String login(HttpServletRequest request);
+	public String deregisterUser(HttpServletRequest request);
+	public String logoutUser(HttpServletRequest request);
+	public String updateUserDetails(HttpServletRequest request);
 	
-	public List<UserDetails> getAllPublishedScenarios();
-	/**
-	 * @param newArtifactIdCreated
-	 * @param tempArtifactId
-	 * @return
-	 */
 }

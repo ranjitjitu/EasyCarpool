@@ -1,79 +1,53 @@
 package com.easycarpool.entity;
 
-public class UserDetails {
+import java.io.Serializable;
 
-	private int scenarioId;
-	private String scenarioName;
-	private String keywords;
-	private String documentType;
-	private String problemSysId;
-	private int categoryId;
-	private String scenarioArtifactId;
-	private float version;
-	private String status;
-	private String scenarioState;
-	
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
+import javax.xml.bind.annotation.XmlRootElement;
 
-	public String getScenarioState() {
-		return scenarioState;
-	}
-	public void setScenarioState(String scenarioState) {
-		this.scenarioState = scenarioState;
-	}
+@XmlRootElement
+public class UserDetails implements Serializable{
 
-	public String getScenarioArtifactId() {
-		return scenarioArtifactId;
+	private static final long serialVersionUID = 2752051185276433313L;
+	private String username;
+	private String email;
+	private String gender;
+	private String company;
+	private int age;
+	private String password;
+	public String getPassword() {
+		return password;
 	}
-	public void setScenarioArtifactId(String scenarioArtifactId) {
-		this.scenarioArtifactId = scenarioArtifactId;
+	public void setPassword(String password) {
+		this.password = password;
 	}
-	public int getCategoryId() {
-		return categoryId;
+	public String getUsername() {
+		return username;
 	}
-	public void setCategoryId(int categoryId) {
-		this.categoryId = categoryId;
+	public void setUsername(String username) {
+		this.username = username;
 	}
-	public String getProblemSysId() {
-		return problemSysId;
+	public String getEmail() {
+		return email;
 	}
-	public void setProblemSysId(String problemSysId) {
-		this.problemSysId = problemSysId;
+	public void setEmail(String email) {
+		this.email = email;
 	}
-	public String getDocumentType() {
-		return documentType;
+	public String getGender() {
+		return gender;
 	}
-	public void setDocumentType(String documentType) {
-		this.documentType = documentType;
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
-	public int getScenarioId() {
-		return scenarioId;
+	public String getCompany() {
+		return company;
 	}
-	public void setScenarioId(int scenarioId) {
-		this.scenarioId = scenarioId;
+	public void setCompany(String company) {
+		this.company = company;
 	}
-	public String getScenarioName() {
-		return scenarioName;
+	public int getAge() {
+		return age;
 	}
-	public void setScenarioName(String scenarioName) {
-		this.scenarioName = scenarioName;
+	public void setAge(int age) {
+		this.age = age;
 	}
-	public String getKeywords() {
-		return keywords;
-	}
-	public void setKeywords(String keywords) {
-		this.keywords = keywords;
-	}
-	public float getVersion() {
-		return version;
-	}
-	public void setVersion(float version) {
-		this.version = version;
-	}
-	
 }
