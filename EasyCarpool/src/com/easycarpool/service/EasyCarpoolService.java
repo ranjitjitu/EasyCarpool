@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Level;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.easycarpool.dao.impl.UserDetailsDaoImpl;
+import com.easycarpool.log.EasyCarpoolLogger;
+import com.easycarpool.log.IEasyCarpoolLogger;
 import com.easycarpool.mail.IMailServer;
 import com.easycarpool.mail.MailServerImpl;
 import com.easycarpool.util.RedisCommonUtil;
@@ -23,6 +27,8 @@ import com.easycarpool.util.RedisCommonUtil;
 @RequestMapping("/easyCarpoolService")
 public class EasyCarpoolService {
 	
+	private static IEasyCarpoolLogger logger = EasyCarpoolLogger.getLogger();
+	private static String CLASS_NAME = EasyCarpoolService.class.getName();
 	private static IMailServer mailServer = new MailServerImpl();
 	private static int minRangeOTP = 000000;
 	private static int maxRangeOTP = 999999;
@@ -51,7 +57,7 @@ public class EasyCarpoolService {
 				msg.put("Status", "Error");
 				msg.put("Message", "Mail Not Sent.Try Again");
 			} catch (JSONException e) {
-				e.printStackTrace();
+				logger.log(Level.ERROR, CLASS_NAME, "registrationService", "Exception thrown in registrationService : "+e.getMessage());
 			}
 			
 		}
@@ -82,7 +88,7 @@ public class EasyCarpoolService {
 				msg.put("Status", "Error");
 				msg.put("Message", "User Verification Failed. Sorry");
 			} catch (JSONException e) {
-				e.printStackTrace();
+				logger.log(Level.ERROR, CLASS_NAME, "verificationService", "Exception thrown in verificationService : "+e.getMessage());
 			}
 			
 		}
@@ -109,11 +115,21 @@ public class EasyCarpoolService {
 				msg.put("Status", "Error");
 				msg.put("Message", "Service Error. Please try again");
 			} catch (JSONException e) {
-				e.printStackTrace();
+				logger.log(Level.ERROR, CLASS_NAME, "defaultService", "Exception thrown in defaultService : "+e.getMessage());
 			}
 			
 		}
 		return msg.toString();
+	}
+	@RequestMapping(value= "login", method = {RequestMethod.POST, RequestMethod.GET})
+	@ResponseBody
+	public String loginService(HttpServletRequest request) throws MalformedURLException, IOException {
+		try{
+		return serviceRedirectImpl.redirectService("loginUser", request);
+		}catch(Exception e){	
+			logger.log(Level.ERROR, CLASS_NAME, "loginService", "Exception thrown in loginService : "+e.getMessage());
+		}
+		return null;
 	}
 	
 
