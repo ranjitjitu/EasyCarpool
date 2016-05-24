@@ -1,8 +1,13 @@
 package com.easycarpool.dao.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Level;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import com.easycarpool.dao.RideDetailsDao;
 import com.easycarpool.dao.UserRidesDao;
@@ -87,8 +92,27 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 
 	@Override
 	public String removeRide(HttpServletRequest request) {
-		// TODO Auto-generated method stub
-		return null;
+		String rideId = null;
+		JSONObject msg = new JSONObject();
+		try {
+			rideId = request.getParameter("rideId");
+			List<String> userList = userRide.getUserRideList(rideId);
+			for(String commuterId : userList){
+				userRide.removeUserRideEntry(commuterId, rideId);
+			}
+			redisWrapper.remove(rideId, mapName);
+			msg.put("Status", "Success");
+			msg.put("Message", "Ride Removed SucessFully");
+		} catch (Exception e) {
+			logger.log(Level.ERROR, CLASS_NAME, "removeRide", "Exception thrown while removing ride for ride id : "+rideId+" and Exception is : "+e.getMessage());
+			try {
+				msg.put("Status", "Success");
+				msg.put("Message", "Ride Removed SucessFully");
+			} catch (JSONException e1) {
+				logger.log(Level.ERROR, CLASS_NAME, "removeRide", "Exception thrown while creating json packet in removeRide method and Exception is : "+e.getMessage());
+			}			
+		}
+		return msg.toString();
 	}
 
 }
