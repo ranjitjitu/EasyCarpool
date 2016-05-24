@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Level;
 
 import com.easycarpool.dao.RideDetailsDao;
+import com.easycarpool.dao.UserRidesDao;
 import com.easycarpool.entity.RideDetails;
 import com.easycarpool.entity.UserDetails;
 import com.easycarpool.log.EasyCarpoolLogger;
@@ -17,6 +18,7 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 	private static String CLASS_NAME = RideDetailsDaoImpl.class.getName();
 	private static final String mapName = "ec_rideDetails";
 	private static RedisWrapper redisWrapper = new RedisWrapper();
+	private static UserRidesDao userRide = new UserRidesDaoImpl();
 
 	@Override
 	public String insertRide(HttpServletRequest request) {
@@ -64,8 +66,10 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 	public String confirmRideByUser(HttpServletRequest request) {
 		RideDetails ride = null;
 		String rideId = null;
+		String commuterId = null;
 		try {
 			rideId = request.getParameter("rideId");
+			commuterId = request.getParameter("commuterId");
 			ride = (RideDetails)redisWrapper.get(rideId, mapName);
 			int availableSlots = ride.getAvailableSlots();
 			if(availableSlots > 0){
@@ -73,6 +77,7 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 			}
 			ride.setAvailableSlots(availableSlots);
 			redisWrapper.insert(rideId, mapName, ride);
+			userRide.insertUserRideEntry(commuterId, rideId, false);
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "confirmRideByUser", "Exception thrown while confirming ride for ride id : "+ride.getRideId()+" and Exception is : "+e.getMessage());
 			return "Ride couldnt be booked";

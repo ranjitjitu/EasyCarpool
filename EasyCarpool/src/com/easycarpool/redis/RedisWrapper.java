@@ -1,46 +1,35 @@
 package com.easycarpool.redis;
 
-import org.apache.log4j.Level;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.easycarpool.log.EasyCarpoolLogger;
-import com.easycarpool.log.IEasyCarpoolLogger;
 
 public class RedisWrapper {
 	private static RedisHelper redis = new RedisImpl();
-	private static IEasyCarpoolLogger logger = EasyCarpoolLogger.getLogger();
-	private static String CLASS_NAME = RedisWrapper.class.getName();
 	
-	public void insert(String key, String mapName ,Object obj) {
-		try {
-			redis.put(key, mapName, obj);
-
-		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "insert", "Exception thrown while inserting value : "+e.getMessage());
-		} finally {
-		}
+	public long insert(String key, String mapName ,Object obj) {
+		return redis.put(key, mapName, obj);
 	}
-
 	public Object get(String key, String mapName) {
-		try {
-			return redis.get(mapName, key);
-		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "get", "Exception thrown while in get method : "+e.getMessage());
-		} 
-		return null;
+		return redis.get(mapName, key);
 	}
-	public void remove(String key, String mapName) {
-		try {
-			redis.remove(mapName, key);
-		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "remove", "Exception thrown while in remove method : "+e.getMessage());
-		} 
+	public long remove(String key, String mapName) {
+		return redis.remove(mapName, key);
 	}
 	public boolean containKey(String key, String mapName) {
-		try {
-			return redis.containKey(mapName, key);
-		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "containKey", "Exception thrown while in containKey method : "+e.getMessage());
-		} 
-		return false;
+		return redis.containKey(mapName, key);
+	}
+	public List<Object> getAll(String mapName){
+		return redis.getAll(mapName);
+	}
+	public Map<String, Object> getMap(String mapName){
+		return redis.getMap(mapName);
+	}
+	public Set keySet(String mapName){
+		return redis.keySet(mapName);
+	}
+	public void clear(String mapName){
+		redis.clear(mapName);
 	}
 }

@@ -45,9 +45,9 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "insert", "Exception thrown while inserting value for userDetails for username : "+user.getUsername()+" and Exception is : "+e.getMessage());
-			return "User details saved successfully";
+			return "User details not saved. Try again";
 		}
-		return "User details not saved. Try again";
+		return "User details saved successfully";
 	}
 
 	@Override
@@ -131,8 +131,8 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "insert", "Exception thrown while inserting value for userDetails for username : "+user.getUsername()+" and Exception is : "+e.getMessage());
-			return "User details updated successfully";
+			return "User details updation failed. Try again";
 		}
-		return "User details updation failed. Try again";
+		return "User details updated successfully";
 	}
 }

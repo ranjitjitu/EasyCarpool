@@ -33,9 +33,9 @@ public class CarDetailsDaoImpl implements CarDetailsDao {
 
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "insert", "Exception thrown while inserting value for carDetails for username : "+car.getUsername()+" and Exception is : "+e.getMessage());
-			return "Car details saved successfully";
+			return "Car details not saved. Try again";
 		}
-		return "Car details not saved. Try again";
+		return "Car details saved successfully";
 	}
 
 	@Override
@@ -81,9 +81,9 @@ public class CarDetailsDaoImpl implements CarDetailsDao {
 
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "updateCarDetails", "Exception thrown while inserting value for carDetails for username : "+car.getUsername()+" and Exception is : "+e.getMessage());
-			return "Car details updated successfully";
+			return "Car details updation failed. Try again";
 		}
-		return "Car details updation failed. Try again";
+		return "Car details updated successfully";
 	}
 
 }
