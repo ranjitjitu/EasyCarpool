@@ -1,7 +1,13 @@
 package com.easycarpool.entity;
 
-public class UserRides {
+import java.io.Serializable;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+public class UserRides implements Serializable{
 	
+	private static final long serialVersionUID = -4043063900394801634L;
 	private String username;
 	private String rideId;
 	private boolean confirmed;
