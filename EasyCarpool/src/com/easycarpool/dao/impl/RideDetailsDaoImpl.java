@@ -106,8 +106,36 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "removeRide", "Exception thrown while removing ride for ride id : "+rideId+" and Exception is : "+e.getMessage());
 			try {
-				msg.put("Status", "Success");
-				msg.put("Message", "Ride Removed SucessFully");
+				msg.put("Status", "Error");
+				msg.put("Message", "Ride could not be removed");
+			} catch (JSONException e1) {
+				logger.log(Level.ERROR, CLASS_NAME, "removeRide", "Exception thrown while creating json packet in removeRide method and Exception is : "+e.getMessage());
+			}			
+		}
+		return msg.toString();
+	}
+	@Override
+	public String rejectRideByOwner(HttpServletRequest request) {
+		String rideId = null;
+		String commuterId = null;
+		JSONObject msg = new JSONObject();
+		RideDetails ride = null;
+		try {
+			rideId = request.getParameter("rideId");
+			commuterId = request.getParameter("commuterId");
+			ride = (RideDetails)redisWrapper.get(rideId, mapName);
+			int availableSlots = ride.getAvailableSlots();
+			availableSlots = availableSlots + 1;
+			ride.setAvailableSlots(availableSlots);
+			redisWrapper.insert(rideId, mapName, ride);
+			userRide.removeUserRideEntry(commuterId, rideId);
+			msg.put("Status", "Success");
+			msg.put("Message", "Carpool Request from "+commuterId+" Rejected");
+		} catch (Exception e) {
+			logger.log(Level.ERROR, CLASS_NAME, "removeRide", "Exception thrown while removing ride for ride id : "+rideId+" and Exception is : "+e.getMessage());
+			try {
+				msg.put("Status", "Error");
+				msg.put("Message", "Carpool Request from "+commuterId+" could not be Rejected. Try again");
 			} catch (JSONException e1) {
 				logger.log(Level.ERROR, CLASS_NAME, "removeRide", "Exception thrown while creating json packet in removeRide method and Exception is : "+e.getMessage());
 			}			

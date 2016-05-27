@@ -8,5 +8,5 @@ public interface RideDetailsDao {
 	public String updateRideByOwner(HttpServletRequest request);
 	public String confirmRideByUser(HttpServletRequest request);
 	public String removeRide(HttpServletRequest request);
-
+	public String rejectRideByOwner(HttpServletRequest request);
 }

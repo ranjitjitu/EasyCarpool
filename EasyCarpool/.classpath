@@ -61,5 +61,7 @@
 	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/jedis-2.8.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/commons-pool2-2.4.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/gcm-server-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/apns-0.1.5-jar-with-dependencies.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/apns-0.1.5.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

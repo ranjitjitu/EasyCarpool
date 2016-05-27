@@ -14,15 +14,19 @@ import javax.mail.internet.MimeMessage;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import com.easycarpool.util.ConfigUtils;
+import com.easycarpool.util.EasyCarpoolConstants;
 import com.google.gson.Gson;
 
 public class MailServerImpl implements IMailServer{
 
 	private static Properties props;
-	private String userName = "easycarpooltech@gmail.com";
-	private String password = "easycarpool@123";
+	private static String userName;
+	private static String password;
 
 	static{
+		userName = ConfigUtils.getProperty(EasyCarpoolConstants.MAIL_USERNAME);
+		password = ConfigUtils.getProperty(EasyCarpoolConstants.MAIL_PASSWORD);
 		props = new Properties();
 //		props.setProperty("proxySet","true");
 //		props.setProperty("socksProxyHost","192.168.155.1");
