@@ -21,12 +21,12 @@ import com.google.gson.Gson;
 public class MailServerImpl implements IMailServer{
 
 	private static Properties props;
-	private static String userName;
-	private static String password;
+	private static String mailUserName;
+	private static String mailPassword;
 
 	static{
-		userName = ConfigUtils.getProperty(EasyCarpoolConstants.MAIL_USERNAME);
-		password = ConfigUtils.getProperty(EasyCarpoolConstants.MAIL_PASSWORD);
+		mailUserName = ConfigUtils.getProperty(EasyCarpoolConstants.MAIL_USERNAME);
+		mailPassword = ConfigUtils.getProperty(EasyCarpoolConstants.MAIL_PASSWORD);
 		props = new Properties();
 //		props.setProperty("proxySet","true");
 //		props.setProperty("socksProxyHost","192.168.155.1");
@@ -43,25 +43,26 @@ public class MailServerImpl implements IMailServer{
 	}
 
 	@Override
-	public String sendEmail(String toAddress, String subject, String content) throws JSONException {
+	public String sendEmail(String toAddress, String subject, String content, String username) throws JSONException {
 		// TODO Auto-generated method stub
 		JSONObject msg = new JSONObject();
 		Session session = Session.getDefaultInstance(props,
 				new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(userName,password);
+				return new PasswordAuthentication(mailUserName,mailPassword);
 			}
 		});
 
 		try {
 
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(userName));
+			message.setFrom(new InternetAddress(mailUserName));
 			message.setRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(toAddress));
 			message.setSubject(subject);
 			message.setText("Dear User," +
-					"\n\n Your Verification OTP is below"+
+					"\n\n You have registered for EasyCarpool app with username : "+username+
+					"\n\n To complete the registration process please type in your Verification OTP below"+
 					"\n\n"+content);
 			message.setSentDate(new Date());
 			Transport.send(message);

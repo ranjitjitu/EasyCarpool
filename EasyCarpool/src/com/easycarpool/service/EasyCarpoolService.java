@@ -48,7 +48,7 @@ public class EasyCarpoolService {
 		}
 		String email = request.getParameter("email");
 		String newOTP = String.valueOf(getRandomNumberInRange(minRangeOTP,maxRangeOTP));
-		String response = mailServer.sendEmail(email, "EasyCarpool Verification", newOTP);
+		String response = mailServer.sendEmail(email, "EasyCarpool Verification", newOTP , username);
 		commonUtil.insertOtp(username, newOTP);
 		serviceRedirectImpl.redirectService("insertUserDetails", request);
 		return response;
