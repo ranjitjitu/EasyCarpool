@@ -3,11 +3,16 @@ package com.easycarpool.dao.impl;
 
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Level;
 import org.codehaus.jettison.json.JSONObject;
+
 
 
 import com.easycarpool.dao.UserDetailsDao;
@@ -134,5 +139,37 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 			return "User details updation failed. Try again";
 		}
 		return "User details updated successfully";
+	}
+	
+	public void addAttachmentAndDetails(byte[] data, String fileName,String userName) throws IOException {
+		String folderName=userName+"_DS";
+		String filePath=File.separator+folderName+File.separator;
+		File file1=new File(filePath);
+		file1.mkdir();
+		String fileFullPath=filePath+fileName;
+		String name=fileName.substring(0,fileName.lastIndexOf("."));
+		String ext=fileName.substring(fileName.lastIndexOf(".")+1,fileName.length());
+		File file=new File(fileFullPath);
+		int i=1;
+		String newName=name;
+		boolean exist=true;
+		if(file.exists()){
+			while(exist){
+				newName=name+"_"+i;
+				fileFullPath=filePath+newName+"."+ext;
+				file=new File(fileFullPath);
+				if(!file.exists()){
+					exist=false;
+					break;
+				}
+				i++;
+			}
+		}
+		else{
+			file.createNewFile();
+		}
+		FileOutputStream fOut = new FileOutputStream(fileFullPath,true);
+		fOut.write(data);
+		fOut.close();
 	}
 }
