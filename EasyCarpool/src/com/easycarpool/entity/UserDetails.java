@@ -14,6 +14,13 @@ public class UserDetails implements Serializable{
 	private String company;
 	private int age;
 	private String password;
+	private String userImgUrl;
+	public String getUserImgUrl() {
+		return userImgUrl;
+	}
+	public void setUserImgUrl(String userImgUrl) {
+		this.userImgUrl = userImgUrl;
+	}
 	public String getPassword() {
 		return password;
 	}

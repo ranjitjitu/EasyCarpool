@@ -6,12 +6,18 @@ package com.easycarpool.dao.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Level;
 import org.codehaus.jettison.json.JSONObject;
+
+
+
+
 
 
 
@@ -20,6 +26,8 @@ import com.easycarpool.entity.UserDetails;
 import com.easycarpool.log.EasyCarpoolLogger;
 import com.easycarpool.log.IEasyCarpoolLogger;
 import com.easycarpool.redis.RedisWrapper;
+import com.easycarpool.util.ConfigUtils;
+import com.easycarpool.util.EasyCarpoolConstants;
 import com.easycarpool.util.RedisCommonUtil;
 import com.google.gson.Gson;
 
@@ -40,12 +48,21 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 		UserDetails user = null;
 		try {
 			user = new UserDetails();
-			user.setUsername(request.getParameter("username"));
+			String userName=request.getParameter("username");
+			user.setUsername(userName);
 			user.setCompany(request.getParameter("company"));
 			user.setEmail(request.getParameter("email"));
 			user.setGender(request.getParameter("gender"));
 			user.setPassword(request.getParameter("password"));
 			user.setAge(Integer.parseInt(request.getParameter("age")));
+			String userImgName=request.getParameter("userImgName");
+			InputStream is=request.getInputStream();
+			byte[] data = null;
+			if(is !=null){
+				data=IOUtils.toByteArray(is);
+			}
+			String userImgUrl=uploadUserImage(data,userImgName,userName);
+			user.setUserImgUrl(userImgUrl);
 			redisWrapper.insert(user.getUsername(), mapName, user);
 
 		} catch (Exception e) {
@@ -126,12 +143,21 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 		UserDetails user = null;
 		try {
 			user = new UserDetails();
-			user.setUsername(request.getParameter("username"));
+			String userName=request.getParameter("username");
+			user.setUsername(userName);
 			user.setCompany(request.getParameter("company"));
 			user.setEmail(request.getParameter("email"));
 			user.setGender(request.getParameter("gender"));
 			user.setPassword(request.getParameter("password"));
 			user.setAge(Integer.parseInt(request.getParameter("age")));
+			String userImgName=request.getParameter("userImgName");
+			InputStream is=request.getInputStream();
+			byte[] data = null;
+			if(is !=null){
+				data=IOUtils.toByteArray(is);
+			}
+			String userImgUrl=uploadUserImage(data,userImgName,userName);
+			user.setUserImgUrl(userImgUrl);
 			redisWrapper.insert(user.getUsername(), mapName, user);
 
 		} catch (Exception e) {
@@ -140,10 +166,10 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 		}
 		return "User details updated successfully";
 	}
-	
-	public void addAttachmentAndDetails(byte[] data, String fileName,String userName) throws IOException {
-		String folderName=userName+"_DS";
-		String filePath=File.separator+folderName+File.separator;
+
+	public String uploadUserImage(byte[] data, String fileName,String userName) throws IOException {
+		String folderName=userName;
+		String filePath=ConfigUtils.getProperty(EasyCarpoolConstants.ATTACHMENT_PATH)+File.separator+folderName+File.separator;
 		File file1=new File(filePath);
 		file1.mkdir();
 		String fileFullPath=filePath+fileName;
@@ -171,5 +197,6 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 		FileOutputStream fOut = new FileOutputStream(fileFullPath,true);
 		fOut.write(data);
 		fOut.close();
+		return "/"+userName+"/"+fileName;
 	}
 }
