@@ -60,9 +60,9 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 			byte[] data = null;
 			if(is !=null){
 				data=IOUtils.toByteArray(is);
+				String userImgUrl=uploadUserImage(data,userImgName,userName);
+				user.setUserImgUrl(userImgUrl);
 			}
-			String userImgUrl=uploadUserImage(data,userImgName,userName);
-			user.setUserImgUrl(userImgUrl);
 			redisWrapper.insert(user.getUsername(), mapName, user);
 
 		} catch (Exception e) {
@@ -155,9 +155,9 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 			byte[] data = null;
 			if(is !=null){
 				data=IOUtils.toByteArray(is);
+				String userImgUrl=uploadUserImage(data,userImgName,userName);
+				user.setUserImgUrl(userImgUrl);
 			}
-			String userImgUrl=uploadUserImage(data,userImgName,userName);
-			user.setUserImgUrl(userImgUrl);
 			redisWrapper.insert(user.getUsername(), mapName, user);
 
 		} catch (Exception e) {
