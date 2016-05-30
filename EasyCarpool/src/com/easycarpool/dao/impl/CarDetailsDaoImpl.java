@@ -85,5 +85,19 @@ public class CarDetailsDaoImpl implements CarDetailsDao {
 		}
 		return "Car details updated successfully";
 	}
+	@Override
+	public int checkIfCarRegistered(HttpServletRequest request) {
+		String username = null;
+		try {
+			username = request.getParameter("username");
+			if(redisWrapper.containKey(username,mapName)){
+				return 1;
+			}
+
+		} catch (Exception e) {
+			logger.log(Level.ERROR, CLASS_NAME, "checkIfCarRegistered", "Exception thrown while checking value for carDetails for username : "+username+" and Exception is : "+e.getMessage());
+		}
+		return 0;
+	}
 
 }

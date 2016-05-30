@@ -30,6 +30,7 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 		RideDetails ride = null;
 		try {
 			ride = new RideDetails();
+			
 			ride.setOwnerId(request.getParameter("ownerId"));
 			ride.setRideId(request.getParameter("rideId"));
 			ride.setStartPoint(request.getParameter("startPoint"));

@@ -8,5 +8,6 @@ public interface CarDetailsDao {
 	public String get(HttpServletRequest request);
 	public String deregisterCar(HttpServletRequest request);
 	public String updateCarDetails(HttpServletRequest request);
+	public int checkIfCarRegistered(HttpServletRequest request);
 	
 }
