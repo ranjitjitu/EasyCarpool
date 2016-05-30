@@ -16,6 +16,7 @@ import com.easycarpool.entity.UserDetails;
 import com.easycarpool.log.EasyCarpoolLogger;
 import com.easycarpool.log.IEasyCarpoolLogger;
 import com.easycarpool.redis.RedisWrapper;
+import com.google.gson.Gson;
 
 public class RideDetailsDaoImpl implements RideDetailsDao{
 	
@@ -28,6 +29,7 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 	@Override
 	public String insertRide(HttpServletRequest request) {
 		RideDetails ride = null;
+		String city = null;
 		try {
 			ride = new RideDetails();
 			ride.setOwnerId(request.getParameter("ownerId"));
@@ -37,7 +39,8 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 			ride.setPitStops(request.getParameter("pitStops"));
 			ride.setStartTime(request.getParameter("startTime"));
 			ride.setAvailableSlots(Integer.parseInt(request.getParameter("availableSlots")));
-			redisWrapper.insert(ride.getRideId(), mapName, ride);
+			city = request.getParameter("city");
+			redisWrapper.insert(ride.getRideId(), mapName+"_"+city, ride);
 
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "insertRide", "Exception thrown while inserting value for rideDetails for ride id : "+ride.getRideId()+" and Exception is : "+e.getMessage());
@@ -49,6 +52,7 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 	@Override
 	public String updateRideByOwner(HttpServletRequest request) {
 		RideDetails ride = null;
+		String city = null;
 		try {
 			ride = new RideDetails();
 			ride.setOwnerId(request.getParameter("ownerId"));
@@ -58,7 +62,8 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 			ride.setPitStops(request.getParameter("pitStops"));
 			ride.setStartTime(request.getParameter("startTime"));
 			ride.setAvailableSlots(Integer.parseInt(request.getParameter("availableSlots")));
-			redisWrapper.insert(ride.getRideId(), mapName, ride);
+			city = request.getParameter("city");
+			redisWrapper.insert(ride.getRideId(), mapName+"_"+city, ride);
 
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "updateRideByOwner", "Exception thrown while updating values for rideDetails for ride id : "+ride.getRideId()+" and Exception is : "+e.getMessage());
@@ -72,16 +77,18 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 		RideDetails ride = null;
 		String rideId = null;
 		String commuterId = null;
+		String city = null;
 		try {
 			rideId = request.getParameter("rideId");
 			commuterId = request.getParameter("commuterId");
-			ride = (RideDetails)redisWrapper.get(rideId, mapName);
+			city = request.getParameter("city");
+			ride = (RideDetails)redisWrapper.get(rideId, mapName+"_"+city);
 			int availableSlots = ride.getAvailableSlots();
 			if(availableSlots > 0){
 				availableSlots = availableSlots -1;;
 			}
 			ride.setAvailableSlots(availableSlots);
-			redisWrapper.insert(rideId, mapName, ride);
+			redisWrapper.insert(rideId, mapName+"_"+city, ride);
 			userRide.insertUserRideEntry(commuterId, rideId, false);
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "confirmRideByUser", "Exception thrown while confirming ride for ride id : "+ride.getRideId()+" and Exception is : "+e.getMessage());
@@ -94,13 +101,15 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 	public String removeRide(HttpServletRequest request) {
 		String rideId = null;
 		JSONObject msg = new JSONObject();
+		String city = null;
 		try {
 			rideId = request.getParameter("rideId");
+			city = request.getParameter("city");
 			List<String> userList = userRide.getUserRideList(rideId);
 			for(String commuterId : userList){
 				userRide.removeUserRideEntry(commuterId, rideId);
 			}
-			redisWrapper.remove(rideId, mapName);
+			redisWrapper.remove(rideId, mapName+"_"+city);
 			msg.put("Status", "Success");
 			msg.put("Message", "Ride Removed SucessFully");
 		} catch (Exception e) {
@@ -120,14 +129,16 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 		String commuterId = null;
 		JSONObject msg = new JSONObject();
 		RideDetails ride = null;
+		String city = null;
 		try {
 			rideId = request.getParameter("rideId");
 			commuterId = request.getParameter("commuterId");
-			ride = (RideDetails)redisWrapper.get(rideId, mapName);
+			city = request.getParameter("city");
+			ride = (RideDetails)redisWrapper.get(rideId, mapName+"_"+city);
 			int availableSlots = ride.getAvailableSlots();
 			availableSlots = availableSlots + 1;
 			ride.setAvailableSlots(availableSlots);
-			redisWrapper.insert(rideId, mapName, ride);
+			redisWrapper.insert(rideId, mapName+"_"+city, ride);
 			userRide.removeUserRideEntry(commuterId, rideId);
 			msg.put("Status", "Success");
 			msg.put("Message", "Carpool Request from "+commuterId+" Rejected");
@@ -141,6 +152,28 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 			}			
 		}
 		return msg.toString();
+	}
+	@Override
+	public String fetchFilteredRides(HttpServletRequest request) {
+		String userStartPoint = null;
+		String userEndPoint = null;
+		String city = null;
+		List<RideDetails> filteredList = new ArrayList<RideDetails>();
+		try {
+			userStartPoint = request.getParameter("startPoint");
+			userEndPoint = request.getParameter("endPoint");
+			city = request.getParameter("city");
+			List<Object> rideList = redisWrapper.getAll(mapName+"_"+city);
+			for(Object rideObj : rideList){
+				RideDetails ride = (RideDetails)rideObj;
+				if((ride.getStartPoint().contains(userStartPoint) || userStartPoint.contains(ride.getStartPoint()) || ride.getPitStops().contains(userStartPoint)) && (ride.getEndPoint().contains(userEndPoint) || userEndPoint.contains(ride.getEndPoint()) || ride.getPitStops().contains(userEndPoint))){
+					filteredList.add(ride);
+				}
+			}
+		} catch (Exception e) {
+			logger.log(Level.ERROR, CLASS_NAME, "fetchFilteredRides", "Exception thrown while fetching rides for start point : "+userStartPoint+" and end point : "+userEndPoint+" from City : "+city+" and Exception is : "+e);			
+		}
+		return new Gson().toJson(filteredList);
 	}
 
 }
