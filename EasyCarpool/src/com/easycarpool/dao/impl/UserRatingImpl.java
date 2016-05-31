@@ -1,5 +1,7 @@
 package com.easycarpool.dao.impl;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Level;
 
 import com.easycarpool.dao.UserRatingDao;
@@ -58,6 +60,12 @@ public class UserRatingImpl implements UserRatingDao{
 			logger.log(Level.ERROR, CLASS_NAME, "addRating", "Exception thrown while adding ratingDetails for username :"+username+" and Exception is : "+e);
 		}
 		return new Gson().toJson(ratingDetails);
+	}
+	@Override
+	public String addRatingThroughService(HttpServletRequest request) {
+		String username = request.getParameter("username");
+		int rating = Integer.parseInt(request.getParameter("rating"));
+		return addRating(username, rating);
 	}
 
 }
