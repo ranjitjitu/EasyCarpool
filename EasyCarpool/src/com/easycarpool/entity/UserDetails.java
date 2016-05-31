@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UserDetails implements Serializable{
 
 	private static final long serialVersionUID = 2752051185276433313L;
+	private String firstName;
+	private String lastName;
 	private String username;
 	private String email;
 	private String gender;
@@ -15,6 +17,19 @@ public class UserDetails implements Serializable{
 	private int age;
 	private String password;
 	private String userImgUrl;
+	private String phoneNumber;
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 	public String getUserImgUrl() {
 		return userImgUrl;
 	}
@@ -56,5 +71,11 @@ public class UserDetails implements Serializable{
 	}
 	public void setAge(int age) {
 		this.age = age;
+	}
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 }

@@ -10,9 +10,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.easycarpool.dao.RideDetailsDao;
+import com.easycarpool.dao.UserRatingDao;
 import com.easycarpool.dao.UserRidesDao;
 import com.easycarpool.entity.RideDetails;
-import com.easycarpool.entity.UserDetails;
 import com.easycarpool.log.EasyCarpoolLogger;
 import com.easycarpool.log.IEasyCarpoolLogger;
 import com.easycarpool.redis.RedisWrapper;
@@ -25,6 +25,7 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 	private static final String mapName = "ec_rideDetails";
 	private static RedisWrapper redisWrapper = new RedisWrapper();
 	private static UserRidesDao userRide = new UserRidesDaoImpl();
+	private static UserRatingDao userRating = new UserRatingImpl();
 
 	@Override
 	public String insertRide(HttpServletRequest request) {
@@ -114,11 +115,13 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 			rideId = request.getParameter("rideId");
 			city = request.getParameter("city");
 			company = request.getParameter("company");
+			String ownerId = request.getParameter("ownerId");
 			List<String> userList = userRide.getUserRideList(rideId);
 			for(String commuterId : userList){
 				userRide.removeUserRideEntry(commuterId, rideId);
 			}
 			redisWrapper.remove(rideId, mapName+"_"+city+"_"+company);
+			userRating.addRating(ownerId, 0);
 			msg.put("Status", "Success");
 			msg.put("Message", "Ride Removed SucessFully");
 		} catch (Exception e) {
@@ -154,12 +157,12 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 			msg.put("Status", "Success");
 			msg.put("Message", "Carpool Request from "+commuterId+" Rejected");
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "removeRide", "Exception thrown while removing ride for ride id : "+rideId+" and Exception is : "+e.getMessage());
+			logger.log(Level.ERROR, CLASS_NAME, "rejectRideByOwner", "Exception thrown while rejecting ride for username : "+commuterId+" in ride id : "+rideId+" and Exception is : "+e.getMessage());
 			try {
 				msg.put("Status", "Error");
 				msg.put("Message", "Carpool Request from "+commuterId+" could not be Rejected. Try again");
 			} catch (JSONException e1) {
-				logger.log(Level.ERROR, CLASS_NAME, "removeRide", "Exception thrown while creating json packet in removeRide method and Exception is : "+e.getMessage());
+				logger.log(Level.ERROR, CLASS_NAME, "rejectRideByOwner", "Exception thrown while creating json packet in rejectRideByOwner method and Exception is : "+e.getMessage());
 			}			
 		}
 		return msg.toString();
@@ -187,6 +190,40 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 			logger.log(Level.ERROR, CLASS_NAME, "fetchFilteredRides", "Exception thrown while fetching rides for start point : "+userStartPoint+" and end point : "+userEndPoint+" from City : "+city+" and Exception is : "+e);			
 		}
 		return new Gson().toJson(filteredList);
+	}
+
+	@Override
+	public String rejectRideByCommuter(HttpServletRequest request) {
+		String rideId = null;
+		String commuterId = null;
+		JSONObject msg = new JSONObject();
+		RideDetails ride = null;
+		String city = null;
+		String company = null;
+		try {
+			rideId = request.getParameter("rideId");
+			commuterId = request.getParameter("commuterId");
+			city = request.getParameter("city");
+			company = request.getParameter("company");
+			ride = (RideDetails)redisWrapper.get(rideId, mapName+"_"+city+"_"+company);
+			int availableSlots = ride.getAvailableSlots();
+			availableSlots = availableSlots + 1;
+			ride.setAvailableSlots(availableSlots);
+			redisWrapper.insert(rideId, mapName+"_"+city+"_"+company, ride);
+			userRide.removeUserRideEntry(commuterId, rideId);
+			userRating.addRating(commuterId, 0);
+			msg.put("Status", "Success");
+			msg.put("Message", "Carpool Request from "+commuterId+" Rejected");
+		} catch (Exception e) {
+			logger.log(Level.ERROR, CLASS_NAME, "rejectRideByCommuter", "Exception thrown while removing requested carpool ride for username : "+commuterId+" in ride id : "+rideId+" and Exception is : "+e.getMessage());
+			try {
+				msg.put("Status", "Error");
+				msg.put("Message", "Carpool Request from "+commuterId+" could not be Rejected. Try again");
+			} catch (JSONException e1) {
+				logger.log(Level.ERROR, CLASS_NAME, "rejectRideByCommuter", "Exception thrown while creating json packet in rejectRideByCommuter method and Exception is : "+e.getMessage());
+			}			
+		}
+		return msg.toString();
 	}
 
 }

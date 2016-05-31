@@ -55,6 +55,9 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 			user.setGender(request.getParameter("gender"));
 			user.setPassword(request.getParameter("password"));
 			user.setAge(Integer.parseInt(request.getParameter("age")));
+			user.setPhoneNumber(request.getParameter("phoneNumber"));
+			user.setFirstName(request.getParameter("firstName"));
+			user.setLastName(request.getParameter("lastName"));
 			String userImgName=request.getParameter("userImgName");
 			InputStream is=request.getInputStream();
 			byte[] data = null;
@@ -150,6 +153,9 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 			user.setGender(request.getParameter("gender"));
 			user.setPassword(request.getParameter("password"));
 			user.setAge(Integer.parseInt(request.getParameter("age")));
+			user.setPhoneNumber(request.getParameter("phoneNumber"));
+			user.setFirstName(request.getParameter("firstName"));
+			user.setLastName(request.getParameter("lastName"));
 			String userImgName=request.getParameter("userImgName");
 			InputStream is=request.getInputStream();
 			byte[] data = null;
