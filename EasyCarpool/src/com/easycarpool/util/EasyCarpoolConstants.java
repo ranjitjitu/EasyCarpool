@@ -16,4 +16,5 @@ public class EasyCarpoolConstants {
 	public static final String IOS_PASSPHRASE = "passphrase";
 	public static final String ATTACHMENT_PATH="attachmentPath";
 	public static final String ATTACHMENT_URL="attachmentURL";
+	public static final String RIDE_TIME_DIFF_ALLOWED="rideTimeDifferenceAllowed";
 }

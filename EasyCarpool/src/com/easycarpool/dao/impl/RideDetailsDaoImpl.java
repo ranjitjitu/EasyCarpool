@@ -1,6 +1,10 @@
 package com.easycarpool.dao.impl;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +20,8 @@ import com.easycarpool.entity.RideDetails;
 import com.easycarpool.log.EasyCarpoolLogger;
 import com.easycarpool.log.IEasyCarpoolLogger;
 import com.easycarpool.redis.RedisWrapper;
+import com.easycarpool.util.ConfigUtils;
+import com.easycarpool.util.EasyCarpoolConstants;
 import com.google.gson.Gson;
 
 public class RideDetailsDaoImpl implements RideDetailsDao{
@@ -26,6 +32,7 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 	private static RedisWrapper redisWrapper = new RedisWrapper();
 	private static UserRidesDao userRide = new UserRidesDaoImpl();
 	private static UserRatingDao userRating = new UserRatingImpl();
+	private static long timeDifferenceAllowed = Long.parseLong(ConfigUtils.getProperty(EasyCarpoolConstants.RIDE_TIME_DIFF_ALLOWED));
 
 	@Override
 	public String insertRide(HttpServletRequest request) {
@@ -40,7 +47,7 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 			ride.setStartPoint(request.getParameter("startPoint"));
 			ride.setEndPoint(request.getParameter("endPoint"));
 			ride.setPitStops(request.getParameter("pitStops"));
-			ride.setStartTime(request.getParameter("startTime"));
+			ride.setStartTime(convertToDate(request.getParameter("startTime")));
 			ride.setAvailableSlots(Integer.parseInt(request.getParameter("availableSlots")));
 			city = request.getParameter("city");
 			company = request.getParameter("company");
@@ -65,7 +72,7 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 			ride.setStartPoint(request.getParameter("startPoint"));
 			ride.setEndPoint(request.getParameter("endPoint"));
 			ride.setPitStops(request.getParameter("pitStops"));
-			ride.setStartTime(request.getParameter("startTime"));
+			ride.setStartTime(convertToDate(request.getParameter("startTime")));
 			ride.setAvailableSlots(Integer.parseInt(request.getParameter("availableSlots")));
 			city = request.getParameter("city");
 			company = request.getParameter("company");
@@ -183,7 +190,14 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 			for(Object rideObj : rideList){
 				RideDetails ride = (RideDetails)rideObj;
 				if((ride.getStartPoint().contains(userStartPoint) || userStartPoint.contains(ride.getStartPoint()) || ride.getPitStops().contains(userStartPoint)) && (ride.getEndPoint().contains(userEndPoint) || userEndPoint.contains(ride.getEndPoint()) || ride.getPitStops().contains(userEndPoint))){
-					filteredList.add(ride);
+					Date rideTime = ride.getStartTime();
+					Date currTime = new Date();
+					if(rideTime.after(currTime)){
+						long timeDiff = Math.abs(rideTime.getTime() - currTime.getTime());
+						if(timeDiff/(60*1000)>=timeDifferenceAllowed){
+							filteredList.add(ride);
+						}
+					}	
 				}
 			}
 		} catch (Exception e) {
@@ -224,6 +238,19 @@ public class RideDetailsDaoImpl implements RideDetailsDao{
 			}			
 		}
 		return msg.toString();
+	}
+	private Date convertToDate(String dateInString){
+		SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");					
+		Date date = null;
+		try {
+			date = formatter.parse(dateInString);
+			System.out.println(date);
+			System.out.println(formatter.format(date));
+
+		} catch (ParseException e) {
+			logger.log(Level.ERROR, CLASS_NAME, "convertToDate", "Exception thrown while converting "+dateInString+" into date format and Exception is : "+e);
+		}
+		return date;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.easycarpool.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -13,7 +14,7 @@ public class RideDetails implements Serializable{
 	private String startPoint;
 	private String endPoint;
 	private String pitStops;
-	private String startTime;
+	private Date startTime;
 	private int availableSlots;
 	public String getStartPoint() {
 		return startPoint;
@@ -33,10 +34,10 @@ public class RideDetails implements Serializable{
 	public void setPitStops(String pitStops) {
 		this.pitStops = pitStops;
 	}
-	public String getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
-	public void setStartTime(String startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 	public int getAvailableSlots() {
