@@ -14,6 +14,7 @@ public class RedisCommonUtil {
 	private static String CLASS_NAME = RedisCommonUtil.class.getName();
 	private String otpMapName = "globalOtpMap";
 	private String tokenMapName = "tokenOtpMap";
+	private String emailMapName="ec_emailMap";
 	
 	public void insertOtp(String key,String value){
 		try {
@@ -80,5 +81,19 @@ public class RedisCommonUtil {
 		} 
 		return false;
 	}
-
+	public boolean containEmailKey(String emailId){
+		try {
+			return redis.containKey(emailMapName, emailId);
+		} catch (Exception e) {
+			logger.log(Level.ERROR, CLASS_NAME, "containEmailKey", "Exception thrown while checking key from "+emailMapName+" : "+e.getMessage());
+		} 
+		return false;
+	}
+	public void insertEmail(String emailId,String userName){
+		try {
+			redis.put(emailId, emailMapName, userName);
+		} catch (Exception e) {
+			logger.log(Level.ERROR, CLASS_NAME, "insertEmail", "Exception thrown while inserting value in  "+emailMapName+" : "+e.getMessage());
+		}
+	}
 }

@@ -40,6 +40,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 	private static IEasyCarpoolLogger logger = EasyCarpoolLogger.getLogger();
 	private static String CLASS_NAME = UserDetailsDaoImpl.class.getName();
 	private static final String mapName = "ec_userDetails";
+	private static final String emailMap="ec_emailDetails";
 	private static RedisWrapper redisWrapper = new RedisWrapper();
 	private static RedisCommonUtil commonUtil = new RedisCommonUtil();
 
@@ -48,10 +49,14 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 		UserDetails user = null;
 		try {
 			user = new UserDetails();
+			String emailId=request.getParameter("email");
+			if(!commonUtil.containEmailKey(emailId)){
+				return "User already registered";
+			}
 			String userName=request.getParameter("username");
 			user.setUsername(userName);
 			user.setCompany(request.getParameter("company"));
-			user.setEmail(request.getParameter("email"));
+			user.setEmail(emailId);
 			user.setGender(request.getParameter("gender"));
 			user.setPassword(request.getParameter("password"));
 			user.setAge(Integer.parseInt(request.getParameter("age")));
@@ -67,6 +72,7 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 				user.setUserImgUrl(userImgUrl);
 			}
 			redisWrapper.insert(user.getUsername(), mapName, user);
+			commonUtil.insertEmail(emailId, userName);
 
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "insert", "Exception thrown while inserting value for userDetails for username : "+user.getUsername()+" and Exception is : "+e.getMessage());
