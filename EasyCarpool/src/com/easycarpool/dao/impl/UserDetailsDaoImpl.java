@@ -150,9 +150,11 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 	@Override
 	public String updateUserDetails(HttpServletRequest request) {
 		UserDetails user = null;
+		UserDetails retrievedUserDetails = null;
 		try {
 			user = new UserDetails();
 			String userName=request.getParameter("username");
+			retrievedUserDetails =(UserDetails)redisWrapper.get(userName, mapName);
 			user.setUsername(userName);
 			user.setCompany(request.getParameter("company"));
 			user.setEmail(request.getParameter("email"));
@@ -171,6 +173,10 @@ public class UserDetailsDaoImpl implements UserDetailsDao{
 				user.setUserImgUrl(userImgUrl);
 			}
 			redisWrapper.insert(user.getUsername(), mapName, user);
+			if(!retrievedUserDetails.getEmail().equals(user.getEmail())){
+				commonUtil.removeEmail(retrievedUserDetails.getEmail());
+				commonUtil.insertEmail(user.getEmail(), userName);
+			}
 
 		} catch (Exception e) {
 			logger.log(Level.ERROR, CLASS_NAME, "insert", "Exception thrown while inserting value for userDetails for username : "+user.getUsername()+" and Exception is : "+e.getMessage());

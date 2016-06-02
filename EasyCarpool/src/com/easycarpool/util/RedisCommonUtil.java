@@ -21,7 +21,7 @@ public class RedisCommonUtil {
 			redis.put(key, otpMapName, value);
 
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "insertOtp", "Exception thrown while inserting value in "+otpMapName+" : "+e.getMessage());
+			logger.log(Level.ERROR, CLASS_NAME, "insertOtp", "Exception thrown while inserting value in "+otpMapName+" : "+e);
 		} 
 	}
 	public String getOtp(String key){
@@ -29,7 +29,7 @@ public class RedisCommonUtil {
 			return (String)redis.get(otpMapName, key);
 
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "getOtp", "Exception thrown while fetching value from "+otpMapName+" : "+e.getMessage());
+			logger.log(Level.ERROR, CLASS_NAME, "getOtp", "Exception thrown while fetching value from "+otpMapName+" : "+e);
 		} 
 		return null;
 	}
@@ -38,14 +38,14 @@ public class RedisCommonUtil {
 			redis.remove(otpMapName, key);
 
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "removeOtp", "Exception thrown while removing value from "+otpMapName+" : "+e.getMessage());
+			logger.log(Level.ERROR, CLASS_NAME, "removeOtp", "Exception thrown while removing value from "+otpMapName+" : "+e);
 		} 
 	}
 	public boolean containsOTPKey(String key) {
 		try {
 			return redis.containKey(otpMapName, key);
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "containsOTPKey", "Exception thrown while checking key from "+otpMapName+" : "+e.getMessage());
+			logger.log(Level.ERROR, CLASS_NAME, "containsOTPKey", "Exception thrown while checking key from "+otpMapName+" : "+e);
 		} 
 		return false;
 	}
@@ -54,7 +54,7 @@ public class RedisCommonUtil {
 			redis.put(key, tokenMapName, value);
 
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "insertToken", "Exception thrown while inserting value in "+tokenMapName+" : "+e.getMessage());
+			logger.log(Level.ERROR, CLASS_NAME, "insertToken", "Exception thrown while inserting value in "+tokenMapName+" : "+e);
 		}
 	}
 	public String getToken(String key){
@@ -62,7 +62,7 @@ public class RedisCommonUtil {
 			return (String)redis.get(tokenMapName, key);
 
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "getToken", "Exception thrown while fetching value from "+tokenMapName+" : "+e.getMessage());
+			logger.log(Level.ERROR, CLASS_NAME, "getToken", "Exception thrown while fetching value from "+tokenMapName+" : "+e);
 		} 
 		return null;
 	}
@@ -71,13 +71,13 @@ public class RedisCommonUtil {
 			redis.remove(tokenMapName, key);
 
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "removeToken", "Exception thrown while removing value from "+tokenMapName+" : "+e.getMessage());
+			logger.log(Level.ERROR, CLASS_NAME, "removeToken", "Exception thrown while removing value from "+tokenMapName+" : "+e);
 		} 
 	}public boolean containsTokenKey(String key) {
 		try {
 			return redis.containKey(tokenMapName, key);
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "containsTokenKey", "Exception thrown while checking key from "+tokenMapName+" : "+e.getMessage());
+			logger.log(Level.ERROR, CLASS_NAME, "containsTokenKey", "Exception thrown while checking key from "+tokenMapName+" : "+e);
 		} 
 		return false;
 	}
@@ -85,7 +85,7 @@ public class RedisCommonUtil {
 		try {
 			return redis.containKey(emailMapName, emailId);
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "containEmailKey", "Exception thrown while checking key from "+emailMapName+" : "+e.getMessage());
+			logger.log(Level.ERROR, CLASS_NAME, "containEmailKey", "Exception thrown while checking "+emailId+" from "+emailMapName+" : "+e);
 		} 
 		return false;
 	}
@@ -93,7 +93,15 @@ public class RedisCommonUtil {
 		try {
 			redis.put(emailId, emailMapName, userName);
 		} catch (Exception e) {
-			logger.log(Level.ERROR, CLASS_NAME, "insertEmail", "Exception thrown while inserting value in  "+emailMapName+" : "+e.getMessage());
+			logger.log(Level.ERROR, CLASS_NAME, "insertEmail", "Exception thrown while inserting "+emailId+" in  "+emailMapName+" : "+e);
+		}	
+	}
+	public void removeEmail(String emailId){
+		try {
+			redis.remove(emailMapName, emailId);
+		} catch (Exception e) {
+			logger.log(Level.ERROR, CLASS_NAME, "removeEmail", "Exception thrown while removing "+emailId+" from "+emailMapName+" : "+e);
 		}
+		
 	}
 }
